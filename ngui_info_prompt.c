@@ -4,7 +4,7 @@
 #include "ngui_textbox.h"
 #include "ngui_button.h"
 #include <string.h>
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include "nunifont.h"
 #include <stdbool.h>
 
@@ -50,7 +50,7 @@ void ngui_info_prompt_button_call(char *caller) {
   char *t1 = ngui_textbox_get_value(ngui_info_prompts[0].textbox1);
   char *t2 = ngui_textbox_get_value(ngui_info_prompts[0].textbox2);
   char *t3 = ngui_textbox_get_value(ngui_info_prompts[0].textbox3);
-   
+
   ngui_info_prompts[0].callback(t1,
                                 t2,
                                 t3
@@ -74,7 +74,7 @@ void ngui_delete_info_prompt(int id) {
   ngui_delete_textbox(ngui_info_prompts[id].textbox1);
   ngui_delete_textbox(ngui_info_prompts[id].textbox2);
   ngui_delete_textbox(ngui_info_prompts[id].textbox3);
-  
+
   ngui_delete_button(ngui_info_prompts[id].button1);
 }
 
@@ -93,7 +93,7 @@ int  ngui_add_info_prompt(int x,int y,
   ngui_info_prompts[ngui_info_prompts_size].p2_opt = p2_opt;
   ngui_info_prompts[ngui_info_prompts_size].p3_opt = p3_opt;
   ngui_info_prompts[ngui_info_prompts_size].callback = (void (*)(const char *,const char *,const char *)) callback;
-  
+
 /*
   int l1 = ngui_add_textlabel((ngui_screen->w/2)-(strlen(p1)*8),
                               (ngui_screen->h/2)-(strlen(p1)*8),
@@ -122,7 +122,7 @@ int  ngui_add_info_prompt(int x,int y,
                            (ngui_screen->h/2)-(strlen(p3)*8)+80,
                            "OK",
                            ngui_info_prompt_button_call);
-  
+
   ngui_info_prompts[ngui_info_prompts_size].textbox1 = tb1;
   ngui_info_prompts[ngui_info_prompts_size].textbox2 = tb2;
   ngui_info_prompts[ngui_info_prompts_size].textbox3 = tb3;

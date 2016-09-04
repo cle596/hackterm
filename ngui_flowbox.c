@@ -1,5 +1,5 @@
 #include <string.h>
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include "nsdl.h"
 #include "nunifont.h"
 #include "ngui.h"
@@ -23,14 +23,14 @@ typedef struct {
   bool selected;
   int input_ports_count;
   ports_data input_ports[5];
-  
+
   int output_ports_count;
   ports_data output_ports[5];
-  
+
   char text[100];
   void (*callback)(const char *);
 } ngui_flowbox_data;
-    
+
 typedef struct {
   bool valid;
   int input_port_flowbox;
@@ -127,7 +127,7 @@ void ngui_receive_event_flowbox(SDL_Event *event, ngui_flowbox_data *d) {
 
     int x = event->button.x;
     int y = event->button.y;
-    
+
     if((x > (d->x-d->x_padding)) && (x < ((d->x)+(strlen(d->text)*9)+d->x_padding)) &&
        (y > (d->y-d->y_padding)) && (y < ((d->y)+16+d->y_padding))) {
       //d->callback("press");
@@ -140,7 +140,7 @@ void ngui_receive_event_flowbox(SDL_Event *event, ngui_flowbox_data *d) {
       if(output_port_inside(x,y,d,n)) {
         d->output_ports[n].selected=true;
         no_select=false;
-      } 
+      }
     }
 
     for(int n=0;n<d->output_ports_count;n++) {
@@ -161,14 +161,14 @@ void ngui_receive_event_flowbox(SDL_Event *event, ngui_flowbox_data *d) {
       if(output_port_inside(x,y,d,n)) {
         d->output_ports[n].selected=true;
         no_select=false;
-      } 
+      }
     }
 
     for(int n=0;n<d->output_ports_count;n++) {
       if(input_port_inside(x,y,d,n)) {
         d->input_ports[n].selected=true;
         no_select=false;
-      } 
+      }
     }
     return;
   }
@@ -181,7 +181,7 @@ void ngui_receive_event_flowbox(SDL_Event *event, ngui_flowbox_data *d) {
       int y = event->button.y;
 
       d->x = x;
-      d->y = y;  
+      d->y = y;
     }
     draw_selection_line_end_x = event->button.x;
     draw_selection_line_end_y = event->button.y;
@@ -206,20 +206,20 @@ void ngui_render_flowbox(ngui_flowbox_data *d) {
   for(int n=0;n<100;n++) text[n] = d->text[n];
 
   SDL_SetRenderDrawColor(ngui_renderer,0xAA,0xAA,0xAA,0xFF);
-  
+
   bool notext=false;
   if(d->shine > 0) {d->shine--; ngui_redraw_required();}
 
   if(!notext) {
     SDL_Rect rect;
-  
+
     rect.x = d->x-d->x_padding;
     rect.y = d->y-d->y_padding;
     rect.w = (strlen(d->text)*9)+(d->x_padding*2);
     rect.h = 16+(d->y_padding*2);
-  
+
     SDL_RenderDrawRect(ngui_renderer,&rect);
-  
+
     draw_unitext_renderer(ngui_renderer,
                 d->x,
                 d->y,
@@ -231,23 +231,23 @@ void ngui_render_flowbox(ngui_flowbox_data *d) {
   SDL_SetRenderDrawColor(ngui_renderer,0xAA,0xAA,0xAA,0xFF);
   for(int n=0;n<d->output_ports_count;n++) {
     SDL_Rect rect;
-  
+
     rect.x = output_port_x(d,n);
     rect.y = output_port_y(d,n);
     rect.w = output_port_w(d,n);
     rect.h = output_port_h(d,n);
-  
+
     SDL_RenderDrawRect(ngui_renderer,&rect);
   }
-  
+
   for(int n=0;n<d->input_ports_count;n++) {
     SDL_Rect rect;
-  
-    rect.x = input_port_x(d,n); 
-    rect.y = input_port_y(d,n); 
+
+    rect.x = input_port_x(d,n);
+    rect.y = input_port_y(d,n);
     rect.w = input_port_w(d,n);
-    rect.h = input_port_h(d,n); 
-  
+    rect.h = input_port_h(d,n);
+
     SDL_RenderDrawRect(ngui_renderer,&rect);
   }
 }
@@ -259,7 +259,7 @@ int flowbox_add_connection(int input_port_flowbox,int input_port_number,int outp
   ngui_flowbox_connections[ngui_flowbox_connections_size].output_port_flowbox = output_port_flowbox;
   ngui_flowbox_connections[ngui_flowbox_connections_size].output_port_number  = output_port_number;
   ngui_flowbox_connections[ngui_flowbox_connections_size].valid = true;
-  
+
   ngui_flowbox_connections_size++;
 }
 
@@ -303,7 +303,7 @@ void ngui_receiveall_flowbox(SDL_Event *event) {
     }
   }
 }
-   
+
 void ngui_render_flowbox_connection(ngui_flowbox_connection_data *d) {
 
   int input_flowbox  = d->input_port_flowbox;
@@ -331,14 +331,14 @@ void ngui_render_flowbox_connection(ngui_flowbox_connection_data *d) {
 
     int n=0;
     for(int x=ox;x!=ix;x+=delta) {
-      
+
       SDL_Rect rect;
-  
+
       rect.x = x;
       rect.y = (m*(x-ox))+oy-4;
       rect.w = 8;//-((n+(flow_run_count/50))%10);
       rect.h = 8;//-((n+(flow_run_count/50))%10);
-  
+
       if(n%15 == ((flow_run_count/50)%15)) SDL_RenderDrawRect(ngui_renderer,&rect);
       n++;
     }
@@ -368,7 +368,7 @@ void ngui_renderall_flowbox() {
       }
     }
   }
-  
+
   int selected_input_port_flowbox = -1;
   int selected_input_port_number  = -1;
   for(int n=0;n<ngui_flowboxs_size;n++) {

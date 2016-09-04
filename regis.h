@@ -4,9 +4,9 @@
 #define _POSIX_C_SOURCE 199309L
 #define _BSD_SOURCE
 
-#include <SDL.h>
-#include <stdint.h>   
-#include <stdio.h>    
+#include <SDL/SDL.h>
+#include <stdint.h>
+#include <stdio.h>
 #include <stdbool.h>
 
 

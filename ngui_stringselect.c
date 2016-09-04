@@ -1,5 +1,5 @@
 #include <string.h>
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include "nsdl.h"
 #include "nunifont.h"
 #include "ngui.h"
@@ -25,7 +25,7 @@ void ngui_receive_event_stringselect(SDL_Event *event, ngui_stringselect_data *d
 
     int x = event->button.x;
     int y = event->button.y;
-    
+
     for(size_t n=0;d->stringlist[n] != 0;n++) {
 
       int cyoff = n*(32+d->y_padding);
@@ -43,13 +43,13 @@ void ngui_receive_event_stringselect(SDL_Event *event, ngui_stringselect_data *d
 
 void ngui_render_stringselect(ngui_stringselect_data *d) {
 
-  
+
   for(size_t n=0;d->stringlist[n] != 0;n++) {
 
     int cyoff = n*(32+d->y_padding);
     //bounding box
     SDL_Rect rect;
-  
+
     rect.x = d->x-d->x_padding;
     rect.y = d->y-d->y_padding+cyoff;
     rect.w = (strlen(d->stringlist[n]))*8+(d->x_padding*2);

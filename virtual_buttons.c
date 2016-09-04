@@ -1,5 +1,5 @@
 #include "virtual_buttons.h"
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include <stdbool.h>
 #include "ngui_button.h"
 #include "nunifont.h"
@@ -114,12 +114,12 @@ void virtual_buttons_disable() {
   ngui_move_button("Ialt"   ,-1000,-1000);
   ngui_move_button("Ictrl"  ,-1000,-1000);
   ngui_move_button("Itab"   ,-1000,-1000);
-      
+
   ngui_move_button("Iup"    ,-1000,-1000);
   ngui_move_button("Idown"  ,-1000,-1000);
   ngui_move_button("Ileft"  ,-1000,-1000);
   ngui_move_button("Iright" ,-1000,-1000);
-      
+
   ngui_move_button("Ipaste" ,-1000,-1000);
   ngui_move_button("Ikbshow",-1000,-1000);
 }
@@ -133,14 +133,14 @@ void virtual_buttons_reposition() {
   ngui_move_button("Ialt"  ,dwidth-(doublewidth*6*3),dheight-(nunifont_height*6*1));
   ngui_move_button("Ictrl" ,dwidth-(doublewidth*6*1),dheight-(nunifont_height*6*3));
   ngui_move_button("Itab"  ,dwidth-(doublewidth*6*1),dheight-(nunifont_height*6*1));
-      
+
   ngui_move_button("Iup"   ,dwidth-(doublewidth*6*2),dheight-(nunifont_height*6*3));
   ngui_move_button("Idown" ,dwidth-(doublewidth*6*2),dheight-(nunifont_height*6*1));
   ngui_move_button("Ileft" ,dwidth-(doublewidth*6*3),dheight-(nunifont_height*6*2));
   ngui_move_button("Iright",dwidth-(doublewidth*6*1),dheight-(nunifont_height*6*2));
-      
+
   ngui_move_button("Ipaste",dwidth-(doublewidth*6*2),dheight-(nunifont_height*6*2));
-  
+
   // check if close overlaps with escape
   if((display_height-(nunifont_height*6*3)) > 80) {
     ngui_move_button("Iclose",dwidth-(doublewidth*6*1)     ,0);

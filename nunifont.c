@@ -1,7 +1,7 @@
 #include "nunifont.h"
 #include <stdio.h>
 #include <string.h>
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include <stdbool.h>
 #include <limits.h>
 #include "uthash.h"
@@ -85,7 +85,7 @@ void nunifont_size(int size) {
   if(size == 16) {
     nunifont_width=8;
     nunifont_height=16;
-  } 
+  }
   if(size == 32) {
     nunifont_width=16;
     nunifont_height=32;
@@ -101,7 +101,7 @@ void set_system_bg(uint32_t b) {
 }
 
 uint32_t get_pixel(uint32_t c,int c_x,int c_y) {
-  
+
   if(c_x < 0 ) return 0;
   if(c_y < 0 ) return 0;
   if(c_x > 15) return 0;
@@ -192,7 +192,7 @@ void draw_character(void *screen,int x,int y,int w,uint32_t cin,uint32_t bg,uint
     // w on input is useless, should be removed.
     SDL_Texture *texture=0;
     if(get_widthmap(cin) != true) w=16; else w=8;
- 
+
     lookup_key_t chr;
     chr.c = cin;
     chr.fg = fg;
@@ -201,29 +201,29 @@ void draw_character(void *screen,int x,int y,int w,uint32_t cin,uint32_t bg,uint
     chr.underline = underline;
     chr.italic = italic;
     chr.strike = strike;
-    
+
     char_render_t *mchr=0;
     HASH_FIND( hh, display_cache, &chr, char_render_t_keylen, mchr);
-    
+
     if(!mchr) {
       uint32_t Rmask, Gmask, Bmask, Amask;      /* masks for desired format */
-   
+
       Rmask = 0xff000000;
       Gmask = 0x00ff0000;
       Bmask = 0x0000ff00;
       Amask = 0x000000ff;
-    
+
       int bpp=32;                /* bits per pixel for desired format */
 
 
       SDL_Surface *converted = SDL_CreateRGBSurface(SDL_SWSURFACE, w, 16, bpp, Rmask, Gmask, Bmask, Amask);
-    
+
       if(converted == NULL) {
         printf("failed to create surface\n");
       }
-      
 
-      
+
+
       draw_character_surface(converted,0,0,w,cin,bg,fg,bold,underline,italic,strike);
 
       texture = SDL_CreateTextureFromSurface(screen, converted);
@@ -237,7 +237,7 @@ void draw_character(void *screen,int x,int y,int w,uint32_t cin,uint32_t bg,uint
       mchr->italic = italic;
       mchr->strike = strike;
       mchr->texture = texture;
-        
+
       HASH_ADD( hh, display_cache, c, char_render_t_keylen, mchr);
     }
 
@@ -262,23 +262,23 @@ void draw_space_surface(void *screen,int x,int y,int w,uint32_t bg,uint32_t fg) 
 }
 
 void draw_space_renderer(void *renderer,int x,int y,int w,uint32_t bg,uint32_t fg) {
-    
+
   SDL_Rect rect;
   rect.w = w;
   rect.h = nunifont_height;
   rect.x = x;
   rect.y = y;
-    
+
   uint32_t  Rmask = 0xff000000;
   uint32_t  Gmask = 0x00ff0000;
   uint32_t  Bmask = 0x0000ff00;
   uint32_t  Amask = 0x000000ff;
-    
+
   int r=(bg & Rmask)>>24;
   int g=(bg & Gmask)>>16;
   int b=(bg & Bmask)>>8;
   int a=(bg & Amask);
-    
+
   SDL_SetRenderDrawColor(renderer,r,g,b,a);
   SDL_RenderFillRect(renderer, &rect);
 }
@@ -363,7 +363,7 @@ void draw_unitext_renderer(void *renderer,int x,int y,const uint16_t *text,uint3
 
     if(text[n] == ' ') {
       if(bg!=system_bg) draw_space_renderer(renderer,c_x,c_y,nunifont_width+nunifont_space,bg,fg);
-      c_x += nunifont_width + nunifont_space; 
+      c_x += nunifont_width + nunifont_space;
     } else {
       int w=8;
       if(get_widthmap(text[n]) != true) w=nunifont_width*2; else w=nunifont_width;
@@ -428,7 +428,7 @@ int load_line(char *line,fontchar *f) {
   int byte=0;
   int bit =0;
   for(;line[pos+1] != 0;pos++) {
-    
+
     int v = hex2dec(line[pos]);
     for(int n=0;n<4;n++) {
 
@@ -454,12 +454,12 @@ void load_fonts(char *filename,fontchar **fontmap,uint8_t **widthmap) {
 
   fontmap_size  = sizeof(fontchar)*65536;
   widthmap_size = sizeof(uint8_t)*(65536/8);
-  
+
   for(size_t n=0;n<65536;n++) for(int i=0;i<32;i++) (*fontmap)[n].data[i] = 0;
   for(size_t n=0;n<(sizeof(uint8_t)*(65536/8));n++) (*widthmap)[n] = 0;
 
   FILE *mfile = fopen(filename,"r");
-  
+
   for(int n=0;!feof(mfile);n++) {
     char *line = (char *) malloc(50);
     size_t size = 50;

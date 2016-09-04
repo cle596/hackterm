@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "regis.h"
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include <time.h>
 #include "nunifont.h"
 
@@ -35,7 +35,7 @@ char *regis_process_cmd_screen(char *cmd) {
   strsep(&code,")");
   if(code == 0) return (cmd+1);
 
-  return code; 
+  return code;
 }
 
 char *regis_process_cmd_text(char *cmd) {
@@ -53,7 +53,7 @@ char *regis_process_cmd_text(char *cmd) {
       wdata[n+1] = 0;
     }
     draw_unitext_surface(regis_layer,pen_x,pen_y,wdata,0x0,0xFFFFFFFF,0,0,0,0);
-  } else 
+  } else
   if(*(cmd+1) == '(') {
     data=cmd+2;
     strsep(&data,")");
@@ -68,7 +68,7 @@ char *regis_process_cmd_w(char *cmd) {
   char *code = cmd+2;
   strsep(&code,")");
   if(code == 0) return (cmd+1);
-  
+
   return code;
 }
 
@@ -150,7 +150,7 @@ char *regis_process_command(char *cmd) {
 struct timespec regis_last_render;
 
 void regis_processor(const char *cmd,int cmdlen) {
- 
+
   char *command = cmd;
 
   for(;;) {
@@ -159,7 +159,7 @@ void regis_processor(const char *cmd,int cmdlen) {
     #ifdef LINUX_BUILD
  //   clock_gettime(CLOCK_MONOTONIC,&regis_last_render);
     #endif
-    
+
     #if defined(IOS_BUILD) || defined(OSX_BUILD) || defined(LINUX_BUILD)
     #if _POSIX_TIMERS > 0
     clock_gettime(CLOCK_REALTIME, &tp);
@@ -179,13 +179,13 @@ void regis_processor(const char *cmd,int cmdlen) {
 }
 
 bool regis_recent() {
- 
+
   struct timespec current_time;
-  
+
   #ifdef LINUX_BUILD
   //clock_gettime(CLOCK_MONOTONIC,&current_time);
   #endif
-  
+
   #if defined(IOS_BUILD) || defined(OSX_BUILD) || defined(LINUX_BUILD)
   #if _POSIX_TIMERS > 0
   clock_gettime(CLOCK_REALTIME, &tp);

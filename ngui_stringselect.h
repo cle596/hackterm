@@ -1,7 +1,7 @@
 #ifndef NGUI_STRINGSELECT_H
 #define NGUI_STRINGSELECT_H
 
-#include <SDL.h>
+#include <SDL/SDL.h>
 
 int ngui_add_stringselect(int x,int y,char **stringlist,void (*callback)(const char *) );
 

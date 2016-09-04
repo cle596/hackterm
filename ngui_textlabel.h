@@ -1,7 +1,7 @@
 #ifndef NGUI_TEXTLABEL
 #define NGUI_TEXTLABEL
 
-#include <SDL.h>
+#include <SDL/SDL.h>
 
 int ngui_add_textlabel(int x,int y,char *text);
 

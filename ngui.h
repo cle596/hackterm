@@ -1,7 +1,7 @@
 #ifndef NGUI
 #define NGUI
 
-#include <SDL.h>
+#include <SDL/SDL.h>
 
 extern struct SDL_Renderer *ngui_renderer;
 

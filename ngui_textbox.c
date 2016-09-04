@@ -1,5 +1,5 @@
 #include <string.h>
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include "nsdl.h"
 #include "nunifont.h"
 #include "ngui.h"
@@ -37,7 +37,7 @@ void ngui_receive_event_textbox(SDL_Event *event, ngui_textbox_data *d) {
   }
 
   // key press processing
-  
+
   if(d->selected) {
     if(event->type == SDL_KEYDOWN) {
 

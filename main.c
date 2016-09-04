@@ -6,7 +6,7 @@
 
 #include "nunifont.h"
 #include <string.h>
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <sys/stat.h>
@@ -109,8 +109,8 @@ int select_text_end_y=-1;
 // Funtions used to communicate with host
 int (*c_open)(char *hostname,char *username, char *password,char *fingerprintstr,char *key1,char *key2) = 0;
 int (*c_close)() = 0;
-int (*c_write)(char *bytes,int len) = 0;       
-int (*c_read)(char *bytes,int len) = 0;    
+int (*c_write)(char *bytes,int len) = 0;
+int (*c_read)(char *bytes,int len) = 0;
 int (*c_resize)(int rows,int cols) = 0;
 
 void scroll_buffer_get(size_t line_number,VTermScreenCell **line,int *len);
@@ -124,7 +124,7 @@ void regis_render() {
 
   if(!regis_cleared()) {
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, regis_layer);
-    
+
     SDL_RenderCopy(renderer, texture, NULL, NULL);
     SDL_DestroyTexture(texture);
   }
@@ -134,7 +134,7 @@ void inline_data_render() {
 
   if(inline_data_layer != 0) {
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, inline_data_layer);
-    
+
     int res = SDL_RenderCopy(renderer, texture, NULL, NULL);
     SDL_DestroyTexture(texture);
   }
@@ -175,7 +175,7 @@ bool cdf =true;
 bool cellcompare(VTermScreenCell a,VTermScreenCell b) {
   if(a.chars[0] != b.chars[0]) return false;
   if(a.chars[1] != b.chars[1]) return false;
-    
+
   if(a.attrs.bold != b.attrs.bold) return false;
   if(a.attrs.underline != b.attrs.underline) return false;
   if(a.attrs.italic != b.attrs.italic) return false;
@@ -183,7 +183,7 @@ bool cellcompare(VTermScreenCell a,VTermScreenCell b) {
   if(a.attrs.reverse != b.attrs.reverse) return false;
   if(a.attrs.strike != b.attrs.strike) return false;
   if(a.attrs.font != b.attrs.font) return false;
-  
+
   return true;
 }
 
@@ -224,7 +224,7 @@ void draw_row(VTermScreenCell *row,int crow,int ypos,int glen) {
                                                 row[n].attrs.font);
     //}
     //c_screen_data[crow][n] = row[n];
-      
+
     xpos+=(nunifont_width+nunifont_space);
     if(row[n].width == 2) {xpos +=(nunifont_width+nunifont_space);n++;}
   }
@@ -238,7 +238,7 @@ void scroll_buffer_init() {
     scroll_buffer[n] = 0;
     scroll_buffer_lens[n]=0;
   }
-  
+
   scroll_buffer_size = scroll_buffer_initial_size;
   scroll_buffer_start=0;
   scroll_buffer_end  =0;
@@ -276,7 +276,7 @@ void scroll_buffer_get(size_t line_number,VTermScreenCell **line,int *len) {
 
   *line = scroll_buffer[idx];
   *len  = scroll_buffer_lens[idx];
-  
+
 }
 
 void scroll_buffer_dump() {
@@ -287,7 +287,7 @@ static int screen_prescroll(VTermRect rect, void *user)
   if(rect.start_row != 0 || rect.start_col != 0 || rect.end_col != cols)
     return 0;
 
-  
+
   for(int row=rect.start_row;row<rect.end_row;row++) {
     VTermScreenCell scrolloff[1000];
 
@@ -356,7 +356,7 @@ int csi_handler(const char *leader, const long args[], int argcount, const char 
     inline_data_clear();
     redraw_required();
   }
-  
+
   // This is an attempt to capture clears in tmux
   if(command == 'K') {
     inline_data_clear();
@@ -405,7 +405,7 @@ void terminal_resize() {
 
   rows = display_height/nunifont_height;
   cols = display_width/nunifont_width;
-    
+
   if(c_resize != NULL) (*c_resize)(cols,rows);
 
   if(vt != 0) vterm_set_size(vt,rows,cols);
@@ -429,7 +429,7 @@ void redraw_text() {
     VTermScreenCell *rowdata=grab_row(trow,&dont_free,&glen);
 
     if(rowdata != 0) draw_row(rowdata,trow,row*(nunifont_height+nunifont_space),glen);
-    
+
     int cursorx=0;
     int cursory=0;
     cursor_position(&cursorx,&cursory);
@@ -455,20 +455,20 @@ void redraw_text() {
 void mouse_to_select_box(int   sx,int   sy,int so,
                          int   ex,int   ey,int eo,
                          int *stx,int *sty,int *etx,int *ety) {
-    
-    
+
+
     *stx=floor(((float)sx/(nunifont_width +nunifont_space)));
     *etx=ceil( ((float)ex/(nunifont_width +nunifont_space)));
     *sty=floor(((float)sy/(nunifont_height+nunifont_space)))-so;
     *ety=ceil( ((float)ey/(nunifont_height+nunifont_space)))-eo;
-    
+
     if(sy > ey) {*ety=*ety-1; *etx=*etx-1;} else
     if(sy < ey) {*ety=*ety-1; }
 
     if(*sty == *ety){
       if(*etx < *stx) *etx = *etx - 1;
       if(*etx > *stx) *etx = *etx + 1;
-    } 
+    }
 }
 
 void get_text_region(int text_start_x,int text_start_y,int text_end_x,int text_end_y,uint16_t **itext,int *ilen) {
@@ -483,13 +483,13 @@ void get_text_region(int text_start_x,int text_start_y,int text_end_x,int text_e
   uint16_t *text = malloc(10240);
   for(int y=text_start_y;y<=text_end_y;y++) {
     bool dont_free=false;
-    
+
     int glen=0;
     VTermScreenCell *row_data = grab_row(y,&dont_free,&glen);
-    
+
     if(row_data == 0) { text[0]=0; }
     else {
-    
+
       //cliping for first and last lines.
       int start_x;
       if(y == text_start_y) {
@@ -503,7 +503,7 @@ void get_text_region(int text_start_x,int text_start_y,int text_end_x,int text_e
       } else {
         end_x = cols;
       }
-      
+
       //find last non-whitespace, clip to here too.
       for(int n=cols;n>=0;n--) {
         if(row_data[n].chars[0] != ' ') {
@@ -511,7 +511,7 @@ void get_text_region(int text_start_x,int text_start_y,int text_end_x,int text_e
           break;
         }
       }
-      
+
       for(int x=start_x;x<end_x;x++) {
         if(text_end_x >= glen) {text_end_x=glen-1;}
 
@@ -541,7 +541,7 @@ void get_text_region(int text_start_x,int text_start_y,int text_end_x,int text_e
 
 void redraw_selection() {
   if(draw_selection || (draw_fade_selection>0)) {
-  
+
     int color=255;
     if(draw_fade_selection>0) {
       color=draw_fade_selection*5;
@@ -562,7 +562,7 @@ void redraw_selection() {
     int ey=sselect_text_end_y*(nunifont_height+nunifont_space)-1;
 
     SDL_SetRenderDrawColor(renderer, color, color, color,color);
-   
+
     // start line
     if(select_text_start_y!=select_text_end_y) { // only draw central block bound for non-central lines.
       SDL_RenderDrawLine(renderer,0,sy+(nunifont_height+nunifont_space),sx,sy+(nunifont_height+nunifont_space));
@@ -571,7 +571,7 @@ void redraw_selection() {
       SDL_RenderDrawLine(renderer,sx,sy,ex,sy);
     }
     SDL_RenderDrawLine(renderer,sx,sy,sx,sy+(nunifont_height+nunifont_space));
-    
+
     // end line
     if(select_text_start_y!=select_text_end_y) { // only draw central block bound for non-central lines.
       SDL_RenderDrawLine(renderer,ex,ey,display_width-1,ey);
@@ -593,14 +593,14 @@ void redraw_selection() {
 void redraw_screen() {
   SDL_SetRenderDrawColor(renderer,0x00,0x00,0x00,0xff);
   SDL_RenderClear(renderer);
-    
+
   any_blinking = false;
 
   redraw_text();
   redraw_selection();
   regis_render();
   inline_data_render();
-  
+
   ngui_render();
 
   SDL_RenderPresent(renderer);
@@ -608,12 +608,12 @@ void redraw_screen() {
 #ifdef IOS_BUILD
 void ios_connect() {
   display_serverselect(screen);
-    
+
   for(;;) {
     display_serverselect_run();
 
     int c = display_serverselect_get(open_arg1,open_arg2,open_arg3,open_arg4,open_arg5,open_arg6);
-    
+
     // key transfer
     if(c == 1) {
       int open_ret = ssh_open_preshell(open_arg1,open_arg2,open_arg3,open_arg4,open_arg5,open_arg6);
@@ -622,7 +622,7 @@ void ios_connect() {
       if(result == 1) display_serverselect_keyxfer_fail();
       display_serverselect_complete();
       c_close();
-        
+
       break;
     }
 
@@ -631,7 +631,7 @@ void ios_connect() {
       display_serverselect_complete();
       break;
     }
-      
+
     // should not happen.
     if(c == -2) {
       break;
@@ -644,7 +644,7 @@ void do_sdl_init() {
     if(SDL_Init(SDL_INIT_VIDEO)<0) {
         return;
     }
-    
+
     #if defined(OSX_BUILD) || defined(IOS_BUILD)
     SDL_GL_SetAttribute(SDL_GL_RED_SIZE  , 8);
     SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
@@ -655,7 +655,7 @@ void do_sdl_init() {
     #ifdef OSX_BUILD
 //      SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 0 );
     #endif
-    
+
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
     #endif
     #ifdef IOS_BUILD
@@ -664,11 +664,11 @@ void do_sdl_init() {
     #if defined(OSX_BUILD) || defined(LINUX_BUILD)
     screen=SDL_CreateWindow("hterm", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1324, 750,SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     #endif
- 
+
     #ifdef IOS_BUILD
       ios_connect();
     #endif
-    
+
     #ifdef IOS_BUILD
     SDL_GetWindowSize(screen,&display_width,&display_height);
     display_width_abs  = display_width;
@@ -679,11 +679,11 @@ void do_sdl_init() {
       printf("Could not initialize Window\n");
       printf("Error: %s\n",SDL_GetError());
     }
-    
+
     renderer = SDL_CreateRenderer(screen, -1, SDL_RENDERER_ACCELERATED);
-    
+
     //SDL_BITSPERPIXEL(format);
-    
+
     SDL_SetRenderDrawBlendMode(renderer,
                                SDL_BLENDMODE_BLEND);
     SDL_SetRenderDrawColor(renderer,0x00,0x00,0xff,0xff);
@@ -713,7 +713,7 @@ void console_read_init() {
     }
   }
   #endif
-  
+
   terminal_resize();
 }
 
@@ -729,7 +729,7 @@ void console_poll() {
     }
     redraw_required();
   }
-  
+
   if(len < 0) {
     hterm_quit = true;
     return;
@@ -743,10 +743,10 @@ int last_kb_shown=-2;
 
 
 void sdl_render_thread() {
-  
+
   SDL_Event event;
   SDL_StartTextInput();
-  
+
   for(;;) {
 
     if(redraw_req) {
@@ -757,26 +757,26 @@ void sdl_render_thread() {
     }
 
     SDL_Event event;
-    
+
     int ret = 1;
     for(;ret==1;) {
-    
+
       ret = SDL_PollEvent(&event);
       if(ret != 0) {
         sdl_read_thread(&event);
       }
     }
-      
+
     console_poll();
     if(hterm_quit == true) return;
- 
+
     #ifdef IOS_BUILD
     if((SDL_IsScreenKeyboardShown(screen) != last_kb_shown) &&
        (last_kb_shown != -3)) {
       SDL_GetWindowSize(screen,&display_width,&display_height);
       display_width_abs = display_width;
       display_height_abs = display_height;
-      
+
       #ifdef IOS_BUILD
       if(SDL_IsScreenKeyboardShown(screen)) {
         display_width  = display_width_last_kb;
@@ -836,7 +836,7 @@ uint8_t *paste_text() {
 void copy_text(uint16_t *itext,int len) {
 
   // TODO: This needs to be updated to generate UTF8 text
-  
+
   size_t pos=0;
   char text[20000];
   for(int n=0;n<len;n++) {
@@ -848,7 +848,7 @@ void copy_text(uint16_t *itext,int len) {
     text[pos+3]=0;
     text[pos+4]=0;
   }
-  
+
   #ifdef IOS_BUILD
   iphone_copy(text);
   #endif
@@ -869,10 +869,10 @@ void copy_text(uint16_t *itext,int len) {
   fprintf(w2,"%s",text);
   pclose(w2);
   #endif
- 
+
   // execute these two commands on Linux/XWindows by default
   //echo "test" | xclip -selection c
-  //echo "test" | xclip -i 
+  //echo "test" | xclip -i
 }
 
 int delta_sum=0;
@@ -882,11 +882,11 @@ bool select_disable=false;
 int last_text_point_x = -1;
 int last_text_point_y = -1;
 void process_mouse_event(SDL_Event *event) {
-  
+
 
   #ifdef IOS_BUILD
   if(event->type == SDL_FINGERMOTION) {
-   
+
      SDL_Touch *t = SDL_GetTouch(event->tfinger.touchId);
 
      if(t->num_fingers != 0) {
@@ -912,7 +912,7 @@ void process_mouse_event(SDL_Event *event) {
        select_disable=false;
      }
   }
-  
+
   if(event->type == SDL_FINGERUP) {
   }
 
@@ -964,17 +964,17 @@ void process_mouse_event(SDL_Event *event) {
     if(xdelta < 0) xdelta = 0-xdelta;
     int ydelta = select_start_y-select_end_y;
     if(ydelta < 0) ydelta = 0-ydelta;
-    
+
     if((xdelta < 15) && (ydelta < 15)) {
-    
+
       // this was a selection less than a single character in size
       // in these cases we don't actually process a selection.
-      
+
       // we note the time, if there was another selection recently then this is a word selection
       // from this point we flood out left and right and select this text.
-      
+
       // we also need to briefly display that this was selected.
-    
+
       int text_start_x;
       int text_start_y;
       int text_end_x;
@@ -983,18 +983,18 @@ void process_mouse_event(SDL_Event *event) {
       mouse_to_select_box(select_start_x,select_start_y,select_start_scroll_offset,
                             select_end_x, select_end_y ,select_end_scroll_offset,
                            &text_start_x, &text_start_y, &text_end_x, &text_end_y);
-    
+
       if((last_text_point_x == text_start_x) &&
          (last_text_point_y == text_start_y)) {
-         
+
          int word_start_x=-1;
          int word_end_x  =-1;
-         
+
          // grab text for this line
          uint16_t *text=0;
          int len=0;
          get_text_region(0,text_start_y,cols,text_start_y,&text,&len);
-         
+
          // find left bound
          for(int n=text_start_x;n>=0;n--) {
            if((text[n] == ' ') || (text[n] == '\n')) {
@@ -1002,7 +1002,7 @@ void process_mouse_event(SDL_Event *event) {
              break;
            }
          }
-         
+
          // find right bound
          for(int n=text_start_x;(n<cols) && (n<len);n++) {
            if((text[n] == ' ') || (text[n] == '\n')) {
@@ -1011,27 +1011,27 @@ void process_mouse_event(SDL_Event *event) {
            }
          }
          if(word_end_x==-1) {word_end_x=len-1;}
-         
+
          // copy single word
          if(len != 0) copy_text(text+word_start_x,word_end_x-word_start_x+1);
          if(text != 0) free(text);
-         
+
          select_text_start_x=word_start_x;
          select_text_end_x  =word_end_x+1;
          select_text_start_y=text_start_y;
          select_text_end_y  =text_start_y;
-         draw_fade_selection=50;         
+         draw_fade_selection=50;
       } else {
         draw_selection=false;
         draw_fade_selection=0;
       }
-      
+
       redraw_required();
       last_text_point_x = text_start_x;
       last_text_point_y = text_start_y;
       return;
     }
-  
+
     int text_start_x;
     int text_start_y;
     int text_end_x;
@@ -1057,9 +1057,9 @@ void process_mouse_event(SDL_Event *event) {
     if(len != 0) copy_text(text,len);
     if(text != 0) free(text);
     redraw_required();
-    
+
     draw_fade_selection=50;
-      
+
   } else
   if(event->type == SDL_MOUSEBUTTONDOWN) {
     select_start_scroll_offset = scroll_offset;
@@ -1071,7 +1071,7 @@ void process_mouse_event(SDL_Event *event) {
     select_text_end_x=-1;
     select_text_start_y=-1;
     select_text_end_y=-1;
-    
+
     draw_selection = true;
     draw_fade_selection=0;
   }
@@ -1079,7 +1079,7 @@ void process_mouse_event(SDL_Event *event) {
 
 void process_resize(SDL_Event *event) {
   if(forced_recreaterenderer>1) forced_recreaterenderer--;
-  
+
   printf("event %u\n",event->type);
 
   if((forced_recreaterenderer==1) ||
@@ -1121,7 +1121,7 @@ void process_resize(SDL_Event *event) {
       #endif
       redraw_required();
   }
-    
+
   if((event->type == SDL_WINDOWEVENT) && (event->window.event == SDL_WINDOWEVENT_ROTATE)) {
     int w = event->window.data1;
     int h = event->window.data2;
@@ -1134,7 +1134,7 @@ void process_resize(SDL_Event *event) {
       display_height_last_kb = h;
     }
     terminal_resize();
-      
+
     #ifdef IOS_BUILD
     if(SDL_IsScreenKeyboardShown(screen)) {
       virtual_buttons_reposition();
@@ -1152,7 +1152,7 @@ void sdl_read_thread(SDL_Event *event) {
   process_resize(event);
   ngui_receive_event(event);
   process_mouse_event(event);
-    
+
   // I can't remember what effect this has on the iOS build, so it's not used there for now.
   #ifndef IOS_BUILD
   if(event->type == SDL_QUIT) {
@@ -1160,12 +1160,12 @@ void sdl_read_thread(SDL_Event *event) {
     return;
   }
   #endif
-  
+
   if(event->type == SDL_TEXTINPUT) {
     char buffer[255];
-        
+
     strcpy(buffer, event->text.text);
-        
+
     if(buffer[0] == 10) buffer[0]=13; // hack round return sending 10, which causes issues for e.g. nano.
                                       // really this should be a full utf8 decode/reencode.
 
@@ -1184,11 +1184,11 @@ void sdl_read_thread(SDL_Event *event) {
         c_write(buf,1);
         hterm_next_key_alt = false;
       }
-                
-        
+
+
       c_write(buffer,strlen(buffer));
   }
-    
+
   if(event->type == SDL_TEXTEDITING) {
   }
 
@@ -1202,7 +1202,7 @@ void sdl_read_thread(SDL_Event *event) {
   #endif
 
   if(event->type == SDL_KEYDOWN) {
-   
+
      SDL_Scancode scancode = event->key.keysym.scancode;
      #if defined(OSX_BUILD) || defined(IOS_BUILD)
      if((scancode == SDL_SCANCODE_DELETE) || (scancode == SDL_SCANCODE_BACKSPACE)) {
@@ -1242,7 +1242,7 @@ void sdl_read_thread(SDL_Event *event) {
        hterm_ctrl_pressed=true;
      }
      #endif
-   
+
      scroll_offset = 0;
      if(scancode == SDL_SCANCODE_LEFT) {
        char buf[4];
@@ -1251,7 +1251,7 @@ void sdl_read_thread(SDL_Event *event) {
        buf[2] = 'D';
        buf[3] = 0;
        c_write(buf,3);
-     } else 
+     } else
        if(scancode == SDL_SCANCODE_RIGHT) {
        char buf[4];
        buf[0] = 0x1b;
@@ -1259,7 +1259,7 @@ void sdl_read_thread(SDL_Event *event) {
        buf[2] = 'C';
        buf[3] = 0;
        c_write(buf,3);
-     } else 
+     } else
      if(scancode == SDL_SCANCODE_UP) {
        char buf[4];
        buf[0] = 0x1b;
@@ -1267,7 +1267,7 @@ void sdl_read_thread(SDL_Event *event) {
        buf[2] = 'A';
        buf[3] = 0;
        c_write(buf,3);
-     } else 
+     } else
      if(scancode == SDL_SCANCODE_DOWN) {
        char buf[4];
        buf[0] = 0x1b;
@@ -1276,7 +1276,7 @@ void sdl_read_thread(SDL_Event *event) {
        buf[3] = 0;
        c_write(buf,3);
      }
-     #if defined(OSX_BUILD) || defined (LINUX_BUILD) 
+     #if defined(OSX_BUILD) || defined (LINUX_BUILD)
      else
      if(hterm_ctrl_pressed && (scancode != SDL_SCANCODE_LCTRL) && (scancode != SDL_SCANCODE_RCTRL)) {
         int i=event->key.keysym.sym;
@@ -1294,8 +1294,8 @@ void sdl_read_thread(SDL_Event *event) {
      // non iOS paste code.
      SDL_Keymod mod = SDL_GetModState();
      #if defined(OSX_BUILD) || defined (LINUX_BUILD)
-     if(((event->key.keysym.sym == 'v') && (mod & KMOD_CTRL)) || 
-        ((event->key.keysym.sym == 'v') && (mod & KMOD_GUI)) 
+     if(((event->key.keysym.sym == 'v') && (mod & KMOD_CTRL)) ||
+        ((event->key.keysym.sym == 'v') && (mod & KMOD_GUI))
        ) {
        // perform text paste
        uint8_t *text = paste_text();
@@ -1368,7 +1368,7 @@ void receive_ssh_info(char *o1,char *o2,char *o3) {
 }
 
 int main(int argc, char **argv) {
-    
+
   // iPhone version only supports ssh connections.
   #ifdef IOS_BUILD
     connection_type = CONNECTION_SSH;
@@ -1392,7 +1392,7 @@ int main(int argc, char **argv) {
     c_read   = &ssh_read;
     c_resize = &ssh_resize;
   }
-    
+
   do_sdl_init();
   SDL_GetWindowSize(screen,&display_width,&display_height);
   display_width_abs = display_width;
@@ -1400,19 +1400,19 @@ int main(int argc, char **argv) {
 
   regis_init(display_width_abs,display_height_abs);
   inline_data_init(display_width_abs,display_height_abs);
-  
+
   ngui_set_renderer(renderer, redraw_required);
-  
+
   #ifdef IOS_BUILD
     virtual_buttons_add();
   #endif
-    
+
   nunifont_load_staticmap(__fontmap_static,__widthmap_static,__fontmap_static_len,__widthmap_static_len);
 
   if(display_height_abs > 2000) nunifont_size(32); else
   if(display_width_abs  > 2000) nunifont_size(32); else
   nunifont_size(16);
-  
+
   vterm_initialisation();
 
   #ifdef IOS_BUILD
@@ -1421,7 +1421,7 @@ int main(int argc, char **argv) {
   for(;;) {
     console_read_init();
     sdl_render_thread();
-   
+
     #ifdef IOS_BUILD
     display_server_select_setactive(false);
     #endif
@@ -1431,10 +1431,10 @@ int main(int argc, char **argv) {
     #ifdef IOS_BUILD
     display_server_select_closedlg();
     #endif
-  
+
     hterm_quit=false;
     SDL_StopTextInput();
-    
+
     SDL_Quit(); // need this to allow me to draw server selection screen.
 
     #ifndef IOS_BUILD

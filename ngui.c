@@ -1,5 +1,5 @@
 #include <string.h>
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include "nunifont.h"
 
 #include "ngui_flowbox.h"
@@ -10,7 +10,7 @@
 #include "ngui_stringselect.h"
 
 SDL_Renderer *ngui_renderer;
-  
+
 void (*ngui_redraw_required_callback)();
 
 void ngui_set_renderer(struct SDL_Renderer *s,void (*redraw_callback)()) {

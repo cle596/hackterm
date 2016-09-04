@@ -1,6 +1,6 @@
 #include "inlinedata.h"
 #include <stdbool.h>
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include <time.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -49,9 +49,9 @@ void info_callback(png_structp png_ptr, png_infop info) {
   width = png_get_image_width(png_ptr,info);
   height = png_get_image_height(png_ptr,info);
   pixel_depth = png_get_bit_depth(png_ptr,info);
-  
+
   channels = png_get_channels(png_ptr,info);
-  
+
   color_type = png_get_color_type(png_ptr,info);
   if(color_type == PNG_COLOR_TYPE_GRAY)      {}
   if(color_type == PNG_COLOR_TYPE_GRAY_ALPHA){}
@@ -62,7 +62,7 @@ void info_callback(png_structp png_ptr, png_infop info) {
     int r = png_get_PLTE(png_ptr,info,&palette,&num_palette);
     if(r == 0) {
     }
-    
+
     png_uint_16p histogram = NULL;
 
     png_get_hIST(png_ptr, info, &histogram);
@@ -99,7 +99,7 @@ int32_t inlineget_pixel(void *row,int pixel_depth,int idx) {
     }
     return value;
   }
-  
+
   if(pixel_depth == 8) {
     return ((uint32_t *)row)[idx];
   }
@@ -115,7 +115,7 @@ void row_callback(png_structp png_ptr, png_bytep new_row, png_uint_32 row_num, i
   png_progressive_combine_row(png_ptr, row_pointers[row_num], new_row);
   for(int n=0;n<width;n++) {
     uint32_t pixel = inlineget_pixel(new_row,pixel_depth,n);
-    
+
     if(pixel_depth == 1) {
       if(pixel!=0) pixel = 0xFFFFFFFF;
     }
@@ -160,14 +160,14 @@ int inlinepng_process_data(png_bytep buffer, png_uint_32 length) {
     png_cleanup();
     return 0;
   };
-  
+
   if (setjmp(png_jmpbuf(Gpng_ptr))) {
     png_destroy_read_struct(&Gpng_ptr, &Ginfo_ptr, (png_infopp)NULL);
     return 1;
   }
 
   png_process_data(Gpng_ptr, Ginfo_ptr, buffer, length);
-  
+
   return 0;
 }
 
@@ -223,7 +223,7 @@ int inline_data_receive(char *data,int length) {
     char decoded_buffer[10240]; // should be malloc'd based on length.
     bool failflag;
     int decoded_buffer_size = base64_decode(data,length,decoded_buffer,&failflag);
- 
+
     if(decoded_buffer_size != 0) {
       inlinepng_process_data(decoded_buffer,decoded_buffer_size);
       if(file_end==1) { processing_png=false; return 1; }
@@ -243,10 +243,10 @@ int inline_data_receive(char *data,int length) {
 
   int npos = buffer_search("HTERMFNORMAL");
   if(npos > 0) nunifont_size(16);
-  
+
   int dpos = buffer_search("HTERMFDOUBLE");
   if(dpos > 0) nunifont_size(32);
-  
+
   int pos = buffer_search(inline_magic);
   if(pos < 0) return 0;
 

@@ -1,5 +1,5 @@
 #include <string.h>
-#include <SDL.h>
+#include <SDL/SDL.h>
 #include "nsdl.h"
 #include "nunifont.h"
 #include "ngui.h"
@@ -25,7 +25,7 @@ void ngui_receive_event_button(SDL_Event *event, ngui_button_data *d) {
 
     int x = event->button.x;
     int y = event->button.y;
-    
+
     if(d->text[0] == 'I') {
       if((x > (d->x)) && (x < ((d->x)+(16*6))) &&
          (y > (d->y)) && (y < ((d->y)+(16*6)))) {
@@ -34,7 +34,7 @@ void ngui_receive_event_button(SDL_Event *event, ngui_button_data *d) {
         ngui_redraw_required();
       }
     }
-    
+
     if((x > (d->x-d->x_padding)) && (x < ((d->x)+(strlen(d->text)*8)+d->x_padding)) &&
        (y > (d->y-d->y_padding)) && (y < ((d->y)+16+d->y_padding))) {
       d->callback("press");
@@ -68,12 +68,12 @@ void ngui_move_button(char *name,int nx,int ny) {
 void draw_kbshow_icon(int x,int y,int shine) {
 
   SDL_Rect rect;
-  
+
   rect.x = x;
   rect.y = y;
   rect.w = 7*16;
   rect.h = 5*16;
- 
+
   SDL_SetRenderDrawColor(ngui_renderer,0x50,0x50,0x50,0xFF);
 
   SDL_RenderDrawRect(ngui_renderer,&rect);
@@ -108,12 +108,12 @@ void draw_kbshow_icon(int x,int y,int shine) {
 void draw_close_icon(int x,int y,int shine) {
 
   SDL_Rect rect;
-  
+
   rect.x = x;
   rect.y = y;
   rect.w = 6*16;
   rect.h = 5*16;
-  
+
   SDL_SetRenderDrawColor(ngui_renderer,0x50,0x50,0x50,0xFF);
 
   SDL_RenderDrawRect(ngui_renderer,&rect);
@@ -155,12 +155,12 @@ void draw_close_icon(int x,int y,int shine) {
 void draw_paste_icon(int x,int y,int shine) {
 
   SDL_Rect rect;
-  
+
   rect.x = x;
   rect.y = y;
   rect.w = 6*16;
   rect.h = 6*16;
-  
+
   SDL_SetRenderDrawColor(ngui_renderer,0x50,0x50,0x50,0xFF);
 
   SDL_RenderDrawRect(ngui_renderer,&rect);
@@ -187,7 +187,7 @@ void draw_paste_icon(int x,int y,int shine) {
   SDL_RenderDrawLine(ngui_renderer,x+(16*2),y+(16*3),x+(16*3),y+(16*3));
   SDL_RenderDrawLine(ngui_renderer,x+(16*3),y+(16*3),x+(16*3),y+(16*4));
   SDL_RenderDrawLine(ngui_renderer,x+(16*3),y+(16*4),x+(16*2),y+(16*4));
-  
+
   // T
   SDL_RenderDrawLine(ngui_renderer,x+(16*6),y+(16*2),x+(16*4),y+(16*2));
   SDL_RenderDrawLine(ngui_renderer,x+(16*5),y+(16*2),x+(16*5),y+(16*4)-1);
@@ -197,12 +197,12 @@ void draw_esc_icon(int x,int y,int shine) {
 
 
   SDL_Rect rect;
-  
+
   rect.x = x;
   rect.y = y;
   rect.w = 6*16;
   rect.h = 6*16;
-  
+
   SDL_SetRenderDrawColor(ngui_renderer,0x50,0x50,0x50,0xFF);
 
   SDL_RenderDrawRect(ngui_renderer,&rect);
@@ -221,14 +221,14 @@ void draw_esc_icon(int x,int y,int shine) {
   SDL_RenderDrawLine(ngui_renderer,x   ,y+(16*0),x   ,y+(16*2));
   SDL_RenderDrawLine(ngui_renderer,x   ,y+(16*2),x+16,y+(16*2));
   SDL_RenderDrawLine(ngui_renderer,x   ,y+(16*1),x+16,y+(16*1));
-  
+
   // S
   SDL_RenderDrawLine(ngui_renderer,x+(16*3),y+(16*0),x+(16*2),y+(16*0));
   SDL_RenderDrawLine(ngui_renderer,x+(16*2),y+(16*0),x+(16*2),y+(16*1));
   SDL_RenderDrawLine(ngui_renderer,x+(16*2),y+(16*1),x+(16*3),y+(16*1));
   SDL_RenderDrawLine(ngui_renderer,x+(16*3),y+(16*1),x+(16*3),y+(16*2));
   SDL_RenderDrawLine(ngui_renderer,x+(16*3),y+(16*2),x+(16*2),y+(16*2));
-  
+
   // C
   SDL_RenderDrawLine(ngui_renderer,x+(16*5),y+(16*0),x+(16*4),y+(16*0));
   SDL_RenderDrawLine(ngui_renderer,x+(16*4),y+(16*0),x+(16*4),y+(16*2));
@@ -239,12 +239,12 @@ void draw_esc_icon(int x,int y,int shine) {
 void draw_tab_icon  (int x,int y,int shine){
 
   SDL_Rect rect;
-  
+
   rect.x = x;
   rect.y = y;
   rect.w = 6*16;
   rect.h = 6*16;
-  
+
   SDL_SetRenderDrawColor(ngui_renderer,0x50,0x50,0x50,0xFF);
   SDL_RenderDrawRect(ngui_renderer,&rect);
 
@@ -260,7 +260,7 @@ void draw_tab_icon  (int x,int y,int shine){
   // T
   SDL_RenderDrawLine(ngui_renderer,x+(16*2),y+(16*4),x   ,y+(16*4));  // Top line
   SDL_RenderDrawLine(ngui_renderer,x+16    ,y+(16*4),x+16,y+(16*6)-1);
-  
+
   // A
   SDL_RenderDrawLine(ngui_renderer,x+(16*4),y+(16*4),x+(16*3),y+(16*4));
   SDL_RenderDrawLine(ngui_renderer,x+(16*3),y+(16*4),x+(16*3),y+(16*6)-1);
@@ -271,7 +271,7 @@ void draw_tab_icon  (int x,int y,int shine){
   SDL_RenderDrawLine(ngui_renderer,x+(16*6)-2,y+(16*4),x+(16*5),y+(16*4));
   SDL_RenderDrawLine(ngui_renderer,x+(16*5),y+(16*4),x+(16*5),y+(16*6)-1);
   SDL_RenderDrawLine(ngui_renderer,x+(16*5),y+(16*6)-1,x+(16*6)-2,y+(16*6)-1);
-  
+
   SDL_RenderDrawLine(ngui_renderer,x+(16*6)-1,y+(16*6)-1,x+(16*6)-1,y+(16*5)+2);
   SDL_RenderDrawLine(ngui_renderer,x+(16*6)-1,y+(16*5)-2,x+(16*6)-1,y+(16*4)+1);
   SDL_RenderDrawLine(ngui_renderer,x+(16*5),y+(16*5),x+(16*6)-2,y+(16*5));
@@ -281,7 +281,7 @@ void draw_alt_icon  (int x,int y,int shine) {
 
 
   SDL_Rect rect;
-  
+
   rect.x = x;
   rect.y = y;
   rect.w = 6*16;
@@ -304,11 +304,11 @@ void draw_alt_icon  (int x,int y,int shine) {
   SDL_RenderDrawLine(ngui_renderer,x   ,y+(16*4),x   ,y+(16*6)-1);  // Down line
   SDL_RenderDrawLine(ngui_renderer,x   ,y+(16*5),x+16,y+(16*5));  // Midline
   SDL_RenderDrawLine(ngui_renderer,x+16,y+(16*4),x+16,y+(16*6)-1);  // Right down line
-  
+
   // L
   SDL_RenderDrawLine(ngui_renderer,x+(16*2),y+(16*4),x+(16*2),y+(16*6)-1); // left
   SDL_RenderDrawLine(ngui_renderer,x+(16*3),y+(16*6)-1,x+(16*2),y+(16*6)-1); //bottom
-  
+
   // T
   SDL_RenderDrawLine(ngui_renderer,x+(16*6),y+(16*4),x+(16*4),y+(16*4));
   SDL_RenderDrawLine(ngui_renderer,x+(16*5),y+(16*4),x+(16*5),y+(16*6)-1);
@@ -319,12 +319,12 @@ void draw_ctrl_icon (int x,int y,int shine){
 
 
   SDL_Rect rect;
-  
+
   rect.x = x;
   rect.y = y;
   rect.w = 6*16;
   rect.h = 6*16;
-  
+
   SDL_SetRenderDrawColor(ngui_renderer,0x50,0x50,0x50,0xFF);
   SDL_RenderDrawRect(ngui_renderer,&rect);
 
@@ -341,7 +341,7 @@ void draw_ctrl_icon (int x,int y,int shine){
   SDL_RenderDrawLine(ngui_renderer,x+16,y+(16*0),x   ,y+(16*0));
   SDL_RenderDrawLine(ngui_renderer,x   ,y+(16*0),x   ,y+(16*2));
   SDL_RenderDrawLine(ngui_renderer,x   ,y+(16*2),x+16,y+(16*2));
-  
+
   // T
   SDL_RenderDrawLine(ngui_renderer,x+(16*4),y+(16*0),x+(16*2)   ,y+(16*0));  // Top line
   SDL_RenderDrawLine(ngui_renderer,x+(16*3),y+(16*0),x+(16*3),y+(16*2));
@@ -355,12 +355,12 @@ void draw_ctrl_icon (int x,int y,int shine){
 void draw_up_icon(int x,int y,int shine){
 
   SDL_Rect rect;
-  
+
   rect.x = x;
   rect.y = y;
   rect.w = 6*16;
   rect.h = 6*16;
-  
+
   SDL_SetRenderDrawColor(ngui_renderer,0x50,0x50,0x50,0xFF);
   SDL_RenderDrawRect(ngui_renderer,&rect);
 
@@ -392,12 +392,12 @@ void draw_down_icon(int x,int y,int shine){
 
 
   SDL_Rect rect;
-  
+
   rect.x = x;
   rect.y = y;
   rect.w = 6*16;
   rect.h = 6*16;
-  
+
   SDL_SetRenderDrawColor(ngui_renderer,0x50,0x50,0x50,0xFF);
   SDL_RenderDrawRect(ngui_renderer,&rect);
 
@@ -427,12 +427,12 @@ void draw_down_icon(int x,int y,int shine){
 void draw_right_icon(int x,int y,int shine){
 
   SDL_Rect rect;
-  
+
   rect.x = x;
   rect.y = y;
   rect.w = 6*16;
   rect.h = 6*16;
-  
+
   SDL_SetRenderDrawColor(ngui_renderer,0x50,0x50,0x50,0xFF);
   SDL_RenderDrawRect(ngui_renderer,&rect);
 
@@ -460,18 +460,18 @@ void draw_right_icon(int x,int y,int shine){
 }
 
 void draw_left_icon(int x,int y,int shine){
-  
+
 
   SDL_Rect rect;
-  
+
   rect.x = x;
   rect.y = y;
   rect.w = 6*16;
   rect.h = 6*16;
-  
+
   SDL_SetRenderDrawColor(ngui_renderer,0x50,0x50,0x50,0xFF);
   SDL_RenderDrawRect(ngui_renderer,&rect);
-  
+
   int col = 0xA0;
   if(shine != 0) {
     if(shine>10) {
@@ -493,7 +493,7 @@ void draw_left_icon(int x,int y,int shine){
   SDL_RenderDrawLine(ngui_renderer,x+(16*4),y+(16*5),x+(16*2),y+(16*5));
   SDL_RenderDrawLine(ngui_renderer,x+(16*2),y+(16*5),x+(16*2),y+(16*4));
   SDL_RenderDrawLine(ngui_renderer,x+(16*2),y+(16*4),x+(16*0),y+(16*4));
-  
+
 }
 
 void draw_menu_icon (int x,int y,int shine){}
@@ -504,7 +504,7 @@ void ngui_render_button(ngui_button_data *d) {
   for(int n=0;n<100;n++) text[n] = d->text[n];
 
   SDL_SetRenderDrawColor(ngui_renderer,0xA0,0xA0,0xA0,0xFF);
-  
+
   bool notext=false;
   if(ustrcmp(text,"Iclose" ) == 0) { draw_close_icon (d->x,d->y,d->shine); notext=true;}
   if(ustrcmp(text,"Ikbshow") == 0) { draw_kbshow_icon(d->x,d->y,d->shine); notext=true;}
@@ -524,14 +524,14 @@ void ngui_render_button(ngui_button_data *d) {
 
   if(!notext) {
     SDL_Rect rect;
-  
+
     rect.x = d->x-d->x_padding;
     rect.y = d->y-d->y_padding;
     rect.w = (strlen(d->text))*8+(d->x_padding*2);
     rect.h = 16+d->y_padding;
-  
+
     SDL_RenderDrawRect(ngui_renderer,&rect);
-  
+
     draw_unitext_renderer(ngui_renderer,
                 d->x,
                 d->y,
