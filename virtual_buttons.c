@@ -1,5 +1,5 @@
 #include "virtual_buttons.h"
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 #include <stdbool.h>
 #include "ngui_button.h"
 #include "nunifont.h"

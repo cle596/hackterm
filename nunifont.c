@@ -1,7 +1,7 @@
 #include "nunifont.h"
 #include <stdio.h>
 #include <string.h>
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 #include <stdbool.h>
 #include <limits.h>
 #include "uthash.h"

@@ -1,0 +1,51 @@
+gcc *.c -o hterm -lSDL2
+main.c:22:19: fatal error: vterm.h: No such file or directory
+compilation terminated.
+ngui_textbox.c: In function ‘ngui_receive_event_textbox’:
+ngui_textbox.c:55:41: error: ‘SDL_Keysym {aka struct SDL_Keysym}’ has no member named ‘unicode’
+         d->text[p]   = event->key.keysym.unicode;
+                                         ^
+nunifont.c: In function ‘nunifont_initcache’:
+nunifont.c:69:28: warning: passing argument 1 of ‘SDL_DestroyTexture’ from incompatible pointer type [-Wincompatible-pointer-types]
+         SDL_DestroyTexture(s);
+                            ^
+In file included from /usr/include/SDL2/SDL.h:52:0,
+                 from nunifont.h:4,
+                 from nunifont.c:1:
+/usr/include/SDL2/SDL_render.h:839:30: note: expected ‘SDL_Texture * {aka struct SDL_Texture *}’ but argument is of type ‘char_render_t * {aka struct <anonymous> *}’
+ extern DECLSPEC void SDLCALL SDL_DestroyTexture(SDL_Texture * texture);
+                              ^
+In file included from regis.c:6:0:
+regis.h:4:0: warning: "_POSIX_C_SOURCE" redefined
+ #define _POSIX_C_SOURCE 199309L
+ ^
+In file included from /usr/include/string.h:25:0,
+                 from regis.c:4:
+/usr/include/features.h:228:0: note: this is the location of the previous definition
+ # define _POSIX_C_SOURCE 200809L
+ ^
+regis.c: In function ‘regis_process_cmd_vector’:
+regis.c:130:3: warning: implicit declaration of function ‘nsdl_lineS’ [-Wimplicit-function-declaration]
+   nsdl_lineS(regis_layer,pen_x,pen_y,new_x,new_y,0xFFFFFFFF);
+   ^
+regis.c: In function ‘regis_processor’:
+regis.c:154:19: warning: initialization discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+   char *command = cmd;
+                   ^
+ssh.c:2:21: fatal error: libssh2.h: No such file or directory
+compilation terminated.
+virtual_buttons.c: In function ‘virtual_kb_up’:
+virtual_buttons.c:21:3: warning: implicit declaration of function ‘SDL_SendKeyboardKey’ [-Wimplicit-function-declaration]
+   SDL_SendKeyboardKey(SDL_PRESSED,SDL_SCANCODE_UP);
+   ^
+virtual_buttons.c: In function ‘virtual_kb_esc’:
+virtual_buttons.c:44:3: warning: implicit declaration of function ‘SDL_SendKeyboardText’ [-Wimplicit-function-declaration]
+   SDL_SendKeyboardText(text);
+   ^
+virtual_buttons.c: In function ‘virtual_kb_paste’:
+virtual_buttons.c:71:19: warning: implicit declaration of function ‘paste_text’ [-Wimplicit-function-declaration]
+   uint8_t *text = paste_text();
+                   ^
+virtual_buttons.c:71:19: warning: initialization makes pointer from integer without a cast [-Wint-conversion]
+Makefile:2: recipe for target 'hterm' failed
+make: *** [hterm] Error 1

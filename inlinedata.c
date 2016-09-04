@@ -1,6 +1,6 @@
 #include "inlinedata.h"
 #include <stdbool.h>
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 #include <time.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -120,7 +120,7 @@ void row_callback(png_structp png_ptr, png_bytep new_row, png_uint_32 row_num, i
       if(pixel!=0) pixel = 0xFFFFFFFF;
     }
 
-    nsdl_pointS(inline_data_layer,n,row_num,pixel);
+    nsdl_point(inline_data_layer,n,row_num,pixel);
   }
 }
 

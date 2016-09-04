@@ -6,7 +6,7 @@
 
 #include "nunifont.h"
 #include <string.h>
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <sys/stat.h>

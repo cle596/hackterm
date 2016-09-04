@@ -1,7 +1,7 @@
 #ifndef NGUI_FLOWBOX
 #define NGUI_FLOWBOX
 
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 void ngui_move_flowbox(char *name,int nx,int ny);
 
