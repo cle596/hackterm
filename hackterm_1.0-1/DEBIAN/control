@@ -1,0 +1,8 @@
+Package: hackterm
+Version: 1.0-1
+Section: base
+Priority: optional
+Architecture: amd64
+Depends: 
+Maintainer: kltena061@gmail.com
+Description: graphic terminal
