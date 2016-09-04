@@ -52,7 +52,7 @@ void ngui_receive_event_textbox(SDL_Event *event, ngui_textbox_data *d) {
           if(d->text[p] == 0) break;
         }
 
-        d->text[p]   = event->key.keysym.unicode;
+        //d->text[p]   = event->key.keysym.unicode;
         d->text[p+1] = 0;
         if(d->callback != NULL) d->callback("redraw");
       }

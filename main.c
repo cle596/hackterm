@@ -28,11 +28,10 @@
 #include <time.h>
 #include "regis.h"
 #include <stdbool.h>
-#include "ssh.h"
 #include "local.h"
 #include "inlinedata.h"
 #include "ngui.h"
-#include "utf8proc.h"
+#include "utf8proc/utf8proc.h"
 
 
 
@@ -46,7 +45,6 @@
 #endif
 
 #define CONNECTION_LOCAL 1
-#define CONNECTION_SSH   2
 
 void redraw_required();
 
@@ -68,8 +66,8 @@ int display_height_last_kb=0;
 int display_width_abs;
 int display_height_abs;
 
-struct SDL_Window  *screen=1;
-struct SDL_Renderer *renderer=1;
+struct SDL_Window  *screen;
+struct SDL_Renderer *renderer;
 
 bool draw_selection = false;
 int draw_fade_selection=0;
@@ -324,13 +322,12 @@ static int screen_bell(void* d) {
 
 }
 
-int state_erase(VTermRect r,void *user) {
+int state_erase(VTermRect r,int selective,void *user) {
   redraw_required();
   return 0;
 }
 
 VTermScreenCallbacks cb_screen = {
-  .prescroll = &screen_prescroll,
   .resize    = &screen_resize,
   .bell      = &screen_bell
 };
@@ -344,11 +341,9 @@ VTermStateCallbacks cb_state = {
   .initpen      = 0,
   .setpenattr   = 0,
   .settermprop  = 0,
-  .setmousefunc = 0,
   .bell         = 0,
   .resize       = 0
 };
-
 
 int csi_handler(const char *leader, const long args[], int argcount, const char *intermed, char command, void *user) {
   if(command == 'J') {
@@ -605,40 +600,6 @@ void redraw_screen() {
 
   SDL_RenderPresent(renderer);
 }
-#ifdef IOS_BUILD
-void ios_connect() {
-  display_serverselect(screen);
-
-  for(;;) {
-    display_serverselect_run();
-
-    int c = display_serverselect_get(open_arg1,open_arg2,open_arg3,open_arg4,open_arg5,open_arg6);
-
-    // key transfer
-    if(c == 1) {
-      int open_ret = ssh_open_preshell(open_arg1,open_arg2,open_arg3,open_arg4,open_arg5,open_arg6);
-      int result = ssh_getkeys(open_arg5,open_arg6);
-      if(result == 0) display_serverselect_keyxfer_ok();
-      if(result == 1) display_serverselect_keyxfer_fail();
-      display_serverselect_complete();
-      c_close();
-
-      break;
-    }
-
-    // normal connection
-    if(c == 2) {
-      display_serverselect_complete();
-      break;
-    }
-
-    // should not happen.
-    if(c == -2) {
-      break;
-    }
-  }
-}
-#endif
 
 void do_sdl_init() {
     if(SDL_Init(SDL_INIT_VIDEO)<0) {
@@ -696,23 +657,6 @@ void sdl_read_thread();
 void console_read_init() {
   int open_ret = c_open(open_arg1,open_arg2,open_arg3,open_arg4,open_arg5,open_arg6);
 
-  #ifdef IOS_BUILD
-  display_server_select_setactive(true);
-
-  if(open_ret == -5) {
-    display_serverselect_keyfailure();
-  }
-
-  if(connection_type == CONNECTION_SSH) {
-    if(open_ret == 0) {
-      char *fingerprintstr = ssh_fingerprintstr();
-      if(open_arg4[0]==0) {
-        display_serverselect_firstkey(fingerprintstr);
-      }
-      write_connection(open_arg1,open_arg2,open_arg3,fingerprintstr);
-    }
-  }
-  #endif
 
   terminal_resize();
 }
@@ -1122,7 +1066,7 @@ void process_resize(SDL_Event *event) {
       redraw_required();
   }
 
-  if((event->type == SDL_WINDOWEVENT) && (event->window.event == SDL_WINDOWEVENT_ROTATE)) {
+  if((event->type == SDL_WINDOWEVENT)) {
     int w = event->window.data1;
     int h = event->window.data2;
 
@@ -1349,30 +1293,14 @@ void vterm_initialisation() {
   vterm_screen_reset(vts, 1);
   vterm_parser_set_utf8(vt,1); // should be vts?
 }
-
-
-bool ssh_received = false;
-char ssh_hostname[100];
-char ssh_username[100];
-char ssh_password[100];
-
 int prompt_id = 0;
 
-void receive_ssh_info(char *o1,char *o2,char *o3) {
 
-  strcpy(ssh_hostname,o1);
-  strcpy(ssh_username,o2);
-  strcpy(ssh_password,o3);
-
-  ssh_received=true;
-}
 
 int main(int argc, char **argv) {
 
   // iPhone version only supports ssh connections.
-  #ifdef IOS_BUILD
-    connection_type = CONNECTION_SSH;
-  #endif
+
 
   #if defined(OSX_BUILD) || defined(LINUX_BUILD)
     connection_type = CONNECTION_LOCAL; // replace with commandline lookup
@@ -1384,13 +1312,6 @@ int main(int argc, char **argv) {
     c_write  = &local_write;
     c_read   = &local_read;
     c_resize = &local_resize;
-  } else
-  if(connection_type == CONNECTION_SSH) {
-    c_open   = &ssh_open;
-    c_close  = &ssh_close;
-    c_write  = &ssh_write;
-    c_read   = &ssh_read;
-    c_resize = &ssh_resize;
   }
 
   do_sdl_init();

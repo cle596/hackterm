@@ -7,6 +7,7 @@
 #include <SDL2/SDL.h>
 #include <time.h>
 #include "nunifont.h"
+#include "nsdl.h"
 
 int pen_x = 0;
 int pen_y = 0;
@@ -127,7 +128,7 @@ char *regis_process_cmd_vector(char *cmd) {
   int new_x = atoi(cmd+2);
   int new_y = atoi(xstr);
 
-  nsdl_lineS(regis_layer,pen_x,pen_y,new_x,new_y,0xFFFFFFFF);
+  nsdl_line(regis_layer,pen_x,pen_y,new_x,new_y,0xFFFFFFFF);
   pen_x = new_x;
   pen_y = new_y;
 

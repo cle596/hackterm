@@ -66,7 +66,7 @@ void nunifont_initcache() {
       char_render_t *s;
 
       for(s=display_cache; s != NULL; s=s->hh.next) {
-        SDL_DestroyTexture(s);
+        SDL_DestroyTexture(s->texture);
       }
     }
 

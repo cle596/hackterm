@@ -1,7 +1,7 @@
 #ifndef REGIS_H
 #define REGIS_H
 
-#define _POSIX_C_SOURCE 199309L
+//#define _POSIX_C_SOURCE 199309L
 #define _BSD_SOURCE
 
 #include <SDL2/SDL.h>
@@ -24,5 +24,7 @@ char *regis_process_cmd_vector(char *cmd);
 char *regis_process_command(char *cmd);
 void regis_processor(const char *cmd,int cmdlen);
 bool regis_recent();
+void regis_render();
+bool regis_cleared();
 
 #endif

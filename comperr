@@ -1,39 +1,34 @@
-gcc *.c -o hterm -lSDL2
-main.c:22:19: fatal error: vterm.h: No such file or directory
-compilation terminated.
-ngui_textbox.c: In function ‘ngui_receive_event_textbox’:
-ngui_textbox.c:55:41: error: ‘SDL_Keysym {aka struct SDL_Keysym}’ has no member named ‘unicode’
-         d->text[p]   = event->key.keysym.unicode;
-                                         ^
-nunifont.c: In function ‘nunifont_initcache’:
-nunifont.c:69:28: warning: passing argument 1 of ‘SDL_DestroyTexture’ from incompatible pointer type [-Wincompatible-pointer-types]
-         SDL_DestroyTexture(s);
-                            ^
-In file included from /usr/include/SDL2/SDL.h:52:0,
-                 from nunifont.h:4,
-                 from nunifont.c:1:
-/usr/include/SDL2/SDL_render.h:839:30: note: expected ‘SDL_Texture * {aka struct SDL_Texture *}’ but argument is of type ‘char_render_t * {aka struct <anonymous> *}’
- extern DECLSPEC void SDLCALL SDL_DestroyTexture(SDL_Texture * texture);
-                              ^
-In file included from regis.c:6:0:
-regis.h:4:0: warning: "_POSIX_C_SOURCE" redefined
- #define _POSIX_C_SOURCE 199309L
- ^
-In file included from /usr/include/string.h:25:0,
-                 from regis.c:4:
-/usr/include/features.h:228:0: note: this is the location of the previous definition
- # define _POSIX_C_SOURCE 200809L
- ^
-regis.c: In function ‘regis_process_cmd_vector’:
-regis.c:130:3: warning: implicit declaration of function ‘nsdl_lineS’ [-Wimplicit-function-declaration]
-   nsdl_lineS(regis_layer,pen_x,pen_y,new_x,new_y,0xFFFFFFFF);
+gcc *.c -o hterm -ldl -lm -lpng16 -lSDL2
+main.c: In function ‘text_handler’:
+main.c:375:23: warning: passing argument 1 of ‘inline_data_receive’ discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+   inline_data_receive(bytes,len);
+                       ^
+In file included from main.c:32:0:
+inlinedata.h:9:6: note: expected ‘char *’ but argument is of type ‘const char *’
+ int  inline_data_receive(char *data,int length);
+      ^
+main.c: In function ‘console_poll’:
+main.c:672:7: warning: implicit declaration of function ‘vterm_push_bytes’ [-Wimplicit-function-declaration]
+       vterm_push_bytes(vt, buffer, len);
+       ^
+main.c: In function ‘vterm_initialisation’:
+main.c:1288:3: warning: implicit declaration of function ‘vterm_state_set_backup_callbacks’ [-Wimplicit-function-declaration]
+   vterm_state_set_backup_callbacks(vs,&cb_state,0);
    ^
+main.c:1291:3: warning: implicit declaration of function ‘vterm_set_parser_backup_callbacks’ [-Wimplicit-function-declaration]
+   vterm_set_parser_backup_callbacks(vt , &cb_parser, NULL);
+   ^
+main.c:1294:3: warning: implicit declaration of function ‘vterm_parser_set_utf8’ [-Wimplicit-function-declaration]
+   vterm_parser_set_utf8(vt,1); // should be vts?
+   ^
+main.c: In function ‘main’:
+main.c:1310:14: warning: assignment from incompatible pointer type [-Wincompatible-pointer-types]
+     c_open   = &local_open;
+              ^
 regis.c: In function ‘regis_processor’:
-regis.c:154:19: warning: initialization discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
+regis.c:155:19: warning: initialization discards ‘const’ qualifier from pointer target type [-Wdiscarded-qualifiers]
    char *command = cmd;
                    ^
-ssh.c:2:21: fatal error: libssh2.h: No such file or directory
-compilation terminated.
 virtual_buttons.c: In function ‘virtual_kb_up’:
 virtual_buttons.c:21:3: warning: implicit declaration of function ‘SDL_SendKeyboardKey’ [-Wimplicit-function-declaration]
    SDL_SendKeyboardKey(SDL_PRESSED,SDL_SCANCODE_UP);
@@ -47,5 +42,54 @@ virtual_buttons.c:71:19: warning: implicit declaration of function ‘paste_text
    uint8_t *text = paste_text();
                    ^
 virtual_buttons.c:71:19: warning: initialization makes pointer from integer without a cast [-Wint-conversion]
+/tmp/ccI74mcr.o: In function `main':
+unifont_conv.c:(.text+0x0): multiple definition of `main'
+/tmp/ccTtsJQl.o:main.c:(.text+0x270e): first defined here
+/tmp/ccvJvFr0.o: In function `row_callback':
+inlinedata.c:(.text+0x3ce): undefined reference to `nsdl_point'
+/tmp/ccTtsJQl.o: In function `grab_row':
+main.c:(.text+0x15c): undefined reference to `vterm_screen_get_cell'
+/tmp/ccTtsJQl.o: In function `screen_prescroll':
+main.c:(.text+0xa8d): undefined reference to `vterm_screen_get_cell'
+/tmp/ccTtsJQl.o: In function `terminal_resize':
+main.c:(.text+0xd6d): undefined reference to `vterm_set_size'
+/tmp/ccTtsJQl.o: In function `cursor_position':
+main.c:(.text+0xda5): undefined reference to `vterm_state_get_cursorpos'
+/tmp/ccTtsJQl.o: In function `console_poll':
+main.c:(.text+0x1991): undefined reference to `vterm_push_bytes'
+/tmp/ccTtsJQl.o: In function `copy_text':
+main.c:(.text+0x1af5): undefined reference to `utf8proc_encode_char'
+/tmp/ccTtsJQl.o: In function `vterm_initialisation':
+main.c:(.text+0x2616): undefined reference to `vterm_new'
+main.c:(.text+0x262c): undefined reference to `vterm_obtain_screen'
+main.c:(.text+0x2642): undefined reference to `vterm_obtain_state'
+main.c:(.text+0x265d): undefined reference to `vterm_state_set_bold_highbright'
+main.c:(.text+0x2671): undefined reference to `vterm_screen_enable_altscreen'
+main.c:(.text+0x268a): undefined reference to `vterm_screen_set_callbacks'
+main.c:(.text+0x26a8): undefined reference to `vterm_state_set_backup_callbacks'
+main.c:(.text+0x26bc): undefined reference to `vterm_screen_set_damage_merge'
+main.c:(.text+0x26da): undefined reference to `vterm_set_parser_backup_callbacks'
+main.c:(.text+0x26ee): undefined reference to `vterm_screen_reset'
+main.c:(.text+0x2707): undefined reference to `vterm_parser_set_utf8'
+/tmp/ccgNvPCa.o: In function `regis_process_cmd_vector':
+regis.c:(.text+0x558): undefined reference to `nsdl_line'
+/tmp/ccGhZVSH.o: In function `virtual_kb_up':
+virtual_buttons.c:(.text+0x1c): undefined reference to `SDL_SendKeyboardKey'
+virtual_buttons.c:(.text+0x30): undefined reference to `SDL_SendKeyboardKey'
+/tmp/ccGhZVSH.o: In function `virtual_kb_down':
+virtual_buttons.c:(.text+0x53): undefined reference to `SDL_SendKeyboardKey'
+virtual_buttons.c:(.text+0x67): undefined reference to `SDL_SendKeyboardKey'
+/tmp/ccGhZVSH.o: In function `virtual_kb_left':
+virtual_buttons.c:(.text+0x8a): undefined reference to `SDL_SendKeyboardKey'
+/tmp/ccGhZVSH.o:virtual_buttons.c:(.text+0x9e): more undefined references to `SDL_SendKeyboardKey' follow
+/tmp/ccGhZVSH.o: In function `virtual_kb_esc':
+virtual_buttons.c:(.text+0x10c): undefined reference to `SDL_SendKeyboardText'
+virtual_buttons.c:(.text+0x120): undefined reference to `SDL_SendKeyboardKey'
+virtual_buttons.c:(.text+0x134): undefined reference to `SDL_SendKeyboardKey'
+/tmp/ccGhZVSH.o: In function `virtual_kb_tab':
+virtual_buttons.c:(.text+0x1a3): undefined reference to `SDL_SendKeyboardText'
+virtual_buttons.c:(.text+0x1b7): undefined reference to `SDL_SendKeyboardKey'
+virtual_buttons.c:(.text+0x1cb): undefined reference to `SDL_SendKeyboardKey'
+collect2: error: ld returned 1 exit status
 Makefile:2: recipe for target 'hterm' failed
 make: *** [hterm] Error 1
